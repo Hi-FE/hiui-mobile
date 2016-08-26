@@ -1,0 +1,7 @@
+.idea
+/demo/node_modules
+/demo/dist/
+/demo/npm-debug.log
+/demo/selenium-debug.log
+/demo/test/unit/coverage
+/demo/test/e2e/reports
