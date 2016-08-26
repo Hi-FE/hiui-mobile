@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   history: true,
   saveScrollPosition: true,
-  root: '/'
+  root: '/hiui-mobile'
 })
 
 router.map({
