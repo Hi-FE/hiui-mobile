@@ -24,7 +24,8 @@
       return {
         components: [
           {name: 'Modal', desc: '弹出层', route_name: 'modal'},
-          {name: 'Rating stars', desc: '评价星星', route_name: 'rating_stars'}
+          {name: 'Rating stars', desc: '评价星星', route_name: 'rating_stars'},
+          {name: 'filter', desc: '123123', route_name: 'filter_list'}
         ]
       }
     }

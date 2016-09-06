@@ -12,7 +12,8 @@ const router = new VueRouter({
 router.map({
   '/': {component: require('./views/home.vue'), name: 'home'},
   '/modal': {component: require('./views/modal.vue'), name: 'modal'},
-  '/rating_stars': {component: require('./views/rating_stars.vue'), name: 'rating_stars'}
+  '/rating_stars': {component: require('./views/rating_stars.vue'), name: 'rating_stars'},
+  '/filter_list': {component: require('./views/filter.vue'), name: 'filter_list'}
 })
 
 const App = Vue.extend(require('./App.vue'))
