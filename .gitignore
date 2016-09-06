@@ -6,4 +6,4 @@
 /demo/test/unit/coverage
 /demo/test/e2e/reports
 
-site/.DS_Store
+.DS_Store
