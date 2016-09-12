@@ -1,7 +1,7 @@
 <template>
   <section class="page-modal">
 
-    <div class="card">
+    <div class="card" v-highlight>
       <header style="margin-top: -4px;">
         <button class="button" @click="is_center_modal_show = true">From center</button>
         <button class="button" @click="is_top_modal_show = true">From top</button>
@@ -9,7 +9,8 @@
         <button class="button" @click="is_left_modal_show = true">From left</button>
         <button class="button" @click="is_right_modal_show = true">From right</button>
       </header>
-      <code></code>
+      <!-- code -->
+      <pre><code class="html" v-text="code"></code></pre>
     </div>
 
     <!-- from center -->
@@ -58,7 +59,18 @@
         is_top_modal_show: false,
         is_bottom_modal_show: false,
         is_left_modal_show: false,
-        is_right_modal_show: false
+        is_right_modal_show: false,
+        code: '<!-- from center -->\n' +
+        '<modal :is_show.sync="is_center_modal_show">\n' +
+        '  <div class="modal-inner">Keep clam & carry on.</div>\n' +
+        '</modal>\n\n' +
+        '<!-- from bottom -->\n' +
+        '<modal :is_show.sync="is_bottom_modal_show" :type="\'from_bottom\'">\n' +
+        '  <div class="modal-inner">\n' +
+        '    <h1>Read after me</h1>\n' +
+        '    <p>A blind man who leans against a wall imagines that it\'s the boundary of the world.</p>\n' +
+        '  </div>\n' +
+        '</modal>'
       }
     },
     components: {modal}
