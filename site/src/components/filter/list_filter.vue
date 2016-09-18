@@ -10,13 +10,12 @@
 
 <script>
   export default {
-    props: {
-      filter_data: {type: Array}
-    },
+    props: [ 'filter_data' ],
     data: function() {
       return {
         is_show_list_filter: false,
-        select_tab: 0 // 筛选器选择的tab
+        select_tab: 0, // 筛选器选择的tab
+        selected_data: []
       }
     },
     events: {
@@ -27,9 +26,10 @@
       'close-filter': function() {
         this.is_show_list_filter = false
       },
-      'do-query': function(data) {
+      'do-query': function(data, selected_data) {
         var self = this
-        self.cur_filter_data = data
+        self.filter_data = data
+        self.selected_data = selected_data
         self.is_show_list_filter = false
       }
     },

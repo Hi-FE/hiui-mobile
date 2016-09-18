@@ -15,7 +15,7 @@
     <div class="more" @click="openWindow(0)" v-if="count==3">
       <img class="i-more" :src="images.more">
     </div>
-  </>
+  </nav>
 </template>
 
 <style scoped>
@@ -44,7 +44,7 @@
       }
     },
     computed: {
-      count() {
+      count: function() {
         return this.cur_filter_data.length > 4 ? 3 : 4
       }
     },
@@ -56,7 +56,7 @@
         var self = this
         self.$dispatch('open-filter-window', index)
       },
-      select_text(tab) {
+      select_text: function(tab) {
         var text = ''
         // 单选
         if (!tab.is_multiple_choice) {

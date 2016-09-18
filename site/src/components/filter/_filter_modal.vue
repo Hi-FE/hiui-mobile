@@ -8,7 +8,7 @@
       </div>
     </div>
     <!-- 左侧tab -->
-    <div class="filter-category" id="filter-category" :class="{ 'filter-category-fixed' : filter_category_style }">
+    <div class="filter-category filter-category-fixed" id="filter-category">
       <div class="category-item"
            :class="{ 'category-active' : select_tab == $index }"
            @click="select_tab = $index"
@@ -81,7 +81,7 @@
   .window-filter .btn-query-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 102; height: 40px; padding: 10px 20px; background-color: #fff; border-top: 1px solid #eaeaea; }
   .window-filter .btn-query { position: relative; top: 50%; transform: translateY(-50%); background-color: #222641; color: #fff; text-align: center; line-height: 40px; font-weight: bolder; }
   .window-filter .card-item-active, .window-filter .allselect { color: #f77; }
-  .window-filter .filter-category-fixed { position: fixed; }
+  .window-filter .filter-category-fixed { position : fixed; }
   .window-filter .card-filter-item .i-check-o { position: relative; top: 50%; transform: translateY(-50%) }
 </style>
 
@@ -91,16 +91,10 @@
     replace: true,
     data: function() {
       return {
-        // filter组件自身样式数据
-        tran_distance: 0,
-        filter_category_style: false,
-        current_tag_id: 0,
-        current_area_id: 0,
-        current_type_id: 0,
-        start_y: false,
-
         // 外部处理后的数据
-        filter_data: {},
+        filter_data: [],
+        // 已选选项
+        selected_data: [],
 
         // icon
         images: {
@@ -294,23 +288,48 @@
         var self = this
         // 数据一级处理,将toggle为true但没有选择的选项复原
         self.filter_data.map(function (item) {
+          var child_count = 0
+          var is_has_child = false
           item.content.map(function (con) {
+            var count = 0
             if (con.child.length) {
-              var child_count = 0
+              is_has_child = true
               for (let i = 0; i < con.child.length; i++) {
                 if (con.child[i].select) {
                   child_count++
+                  count++
                 }
               }
-              if (child_count === 0) {
+              if (count === 0) {
                 con.toggle = false
-                item.content[0].select = true
               }
             }
           })
+          if (child_count === 0 && is_has_child) item.content[0].select = true
         })
+        // 提取已选中数据
+        self.filter_data.map(function(item) {
+          // 提取单选
+          var select_obj = {}
+
+          select_obj.tab_name = item.tab_name
+          select_obj.select_content = []
+          // 遍历每一项
+          item.content.map(function(con) {
+            // 没有二级菜单
+            if (!con.child.length) {
+              if (con.select) select_obj.select_content.push(con)
+            } else {
+              con.child.map(function(child) {
+                if (child.select) select_obj.select_content.push(child)
+              })
+            }
+          })
+          self.selected_data.push(select_obj)
+        })
+        // console.log(self.selected_data)
         self.$nextTick(function () {
-          self.$dispatch('do-query', self.filter_data)
+          self.$dispatch('do-query', self.filter_data, self.selected_data)
         })
       }
     }
