@@ -1,11 +1,22 @@
 <template>
-  <section class="page-list-filter">
-    <list-filter :filter_data="filter_data"></list-filter>
+  <section class="page-list-filter" v-highlight>
+    <list-filter :filter_data="filter_data" :selected_data.sync="selected_data"></list-filter>
+
+    <!-- code -->
+    <pre><code class="html" v-text="code"></code></pre>
+
+    <div class="select-content">
+      <p>选中选项</p>
+      <pre>
+        {{ selected_data | json }}
+      </pre>
+    </div>
   </section>
 </template>
 
 <style scoped>
   .page-list-filter { margin: 0; padding: 0; }
+  .select-content { font-size: 12px; }
 </style>
 
 <script>
@@ -14,10 +25,11 @@
       return {
         is_show_list_filter: false,
         select_tab: 0, // 筛选器选择的tab
+        selected_data: [],
         filter_data: [
           {
             tab_name: '阵营',
-            is_multiple_choice: false, // 是否多选
+            is_multiple_choice: true, // 是否多选
             content: [
               {
                 content_name: '不限',
@@ -113,7 +125,14 @@
               }
             ]
           }
-        ]
+        ],
+        code: '<!-- filter bar -->\n' +
+        '<filter-bar :cur_filter_data="filter_data"></filter-bar>\n\n' +
+        '<!-- filter modal -->\n' +
+        '<filter-modal v-if="is_show_list_filter"\n' +
+        '              :cur_filter_data="filter_data"\n' +
+        '              :select_tab="select_tab"\n' +
+        '              transition="slide-down"></filter-modal>'
       }
     },
     components: {

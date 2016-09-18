@@ -20,7 +20,7 @@
 
 <style scoped>
   .filter-bar { display: flex; width: 100%; height: 53px; border-bottom: 1px solid #eaeaea; background-color: #fff; }
-  .filter-bar .filter-item { flex: 1; padding: 13px 0 13px 4.5%; border-right: 1px solid #F1F1F1; }
+  .filter-bar .filter-item { flex: 1; max-width: 25%; padding: 13px 0 13px 4.5%; border-right: 1px solid #F1F1F1; }
   .filter-bar .bar-item-title { margin: 0; font-size: 10px; line-height: 1; color: #666; }
   .filter-bar .bar-item-content { margin: 0; font-size: 12px; line-height: 1; color: #2D3E50; padding-top: 4px; }
   .filter-bar .bar-item-content span { display: inline-block; max-width: 74%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }

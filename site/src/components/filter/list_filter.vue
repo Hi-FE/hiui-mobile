@@ -10,12 +10,11 @@
 
 <script>
   export default {
-    props: [ 'filter_data' ],
+    props: [ 'filter_data', 'selected_data' ],
     data: function() {
       return {
         is_show_list_filter: false,
-        select_tab: 0, // 筛选器选择的tab
-        selected_data: []
+        select_tab: 0 // 筛选器选择的tab
       }
     },
     events: {
