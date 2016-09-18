@@ -13,7 +13,7 @@
     props: {
       filter_data: {type: Array}
     },
-    data() {
+    data: function() {
       return {
         is_show_list_filter: false,
         select_tab: 0 // 筛选器选择的tab

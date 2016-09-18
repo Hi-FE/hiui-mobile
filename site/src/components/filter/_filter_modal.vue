@@ -89,7 +89,7 @@
   export default {
     props: ['cur_filter_data', 'select_tab'],
     replace: true,
-    data () {
+    data: function() {
       return {
         // filter组件自身样式数据
         tran_distance: 0,
@@ -109,7 +109,7 @@
         }
       }
     },
-    compiled () {
+    compiled: function() {
       var self = this
 
       // 重要:取消父子组件之间的object双向绑定
@@ -118,11 +118,11 @@
     },
     methods: {
       // 关闭筛选器
-      closeWindow() {
+      closeWindow: function() {
         this.$dispatch('close-filter')
       },
       // 当前已选中的文字字符串
-      select_text(tab) {
+      select_text: function(tab) {
         var text = ''
         // 单选
         if (!tab.is_multiple_choice) {
@@ -162,7 +162,7 @@
        * @param {is_multiple_choice} 当前选项组是否是多选 Boolean
        * @param {child} 当前选中对象是否有二级菜单,如没有则为'',有则为Array
        * */
-      select(pindex, index, con, is_multiple_choice, child) {
+      select: function(pindex, index, con, is_multiple_choice, child) {
         var self = this
         // 每个tab第一个选项为“全部”选项,此选项只能单选
         if (index === 0) {
@@ -194,7 +194,7 @@
           }
         }
       },
-      checkSelect(pindex, index, con, is_multiple_choice, child) {
+      checkSelect: function(pindex, index, con, is_multiple_choice, child) {
         var self = this
         // 每个tab第一个选项为“全部”选项,此选项只能单选
         if (index === 0) {
@@ -243,7 +243,7 @@
         }
       },
       // 二级选中
-      secSelect(ppindex, pindex, child, is_multiple_choice) {
+      secSelect: function(ppindex, pindex, child, is_multiple_choice) {
         var self = this
         // 单选
         if (!is_multiple_choice) {
@@ -262,7 +262,7 @@
         }
       },
       // is全选?
-      is_all_select(pindex, index, child) {
+      is_all_select: function(pindex, index, child) {
         var self = this
         if (child.length) {
           for (let i = 0; i < self.filter_data[pindex].content[index].child.length; i++) {
@@ -273,7 +273,7 @@
           return true
         }
       },
-      iconselect(pindex, index, con, child) {
+      iconselect: function(pindex, index, con, child) {
         var self = this
         if (child.length) {
           for (let i = 0; i < self.filter_data[pindex].content[index].child.length; i++) {
@@ -290,7 +290,7 @@
         return '#ccc'
       },
       // 查询
-      doQuery() {
+      doQuery: function() {
         var self = this
         // 数据一级处理,将toggle为true但没有选择的选项复原
         self.filter_data.map(function (item) {
