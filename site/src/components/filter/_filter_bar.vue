@@ -95,19 +95,22 @@
                 }
               }
               // 如果选项展开但是并没有子集选中,输出父级菜单
-              text += tab.content[i2].content_name
-              return text
+              if (!text) {
+                text += tab.content[i2].content_name
+              }
+              // return text
             }
             // 直到最后一个都没有toggle,单级遍历
             if (i2 === tab.content.length - 1) {
               for (var tl2 = 0; tl2 < tab.content.length; tl2++) {
                 if (tab.content[tl2].select) {
                   text += tab.content[tl2].content_name
-                  return text
+                  // return text
                 }
               }
             }
           }
+          return text
         }
       }
     }
