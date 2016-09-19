@@ -101,7 +101,7 @@
           },
           {
             tab_name: '目的地',
-            is_multiple_choice: false,
+            is_multiple_choice: true,
             content: [
               {
                 content_name: '不限',

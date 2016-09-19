@@ -30,6 +30,9 @@
         self.filter_data = data
         self.selected_data = selected_data
         self.is_show_list_filter = false
+      },
+      'filter-sort': function() {
+        console.log('sort')
       }
     },
     components: {
