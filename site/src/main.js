@@ -16,7 +16,8 @@ router.map({
   '/': {component: require('./views/home.vue'), name: 'home'},
   '/modal': {component: require('./views/modal.vue'), name: 'modal'},
   '/rating_stars': {component: require('./views/rating_stars.vue'), name: 'rating_stars'},
-  '/list_filter': {component: require('./views/list_filter.vue'), name: 'list_filter'}
+  '/list_filter': {component: require('./views/list_filter.vue'), name: 'list_filter'},
+  '/calendar': {component: require('./views/calendar.vue'), name: 'calendar'}
 })
 
 Vue.directive('highlight', function () {

@@ -25,7 +25,8 @@
         components: [
           {name: 'Modal', desc: '弹出层', route_name: 'modal'},
           {name: 'Rating stars', desc: '评价星星', route_name: 'rating_stars'},
-          {name: 'List filter', desc: '列表筛选器', route_name: 'list_filter'}
+          {name: 'List filter', desc: '列表筛选器', route_name: 'list_filter'},
+          {name: 'Calendar', desc: '日历', route_name: 'calendar'}
         ]
       }
     }
