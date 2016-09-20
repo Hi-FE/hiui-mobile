@@ -149,7 +149,7 @@
         rangeBegin: [], // 范围选择起始日期
         rangeEnd: [], // 范围选择结束日期
         formated_json_data: {},
-        sep: "-",
+        sep: '-',
         week_days: ['日', '一', '二', '三', '四', '五', '六']
       }
     },
@@ -171,12 +171,10 @@
         if (self.daterange) {
           if (self.year === self.dateEnd[0] && self.month + 1 === self.dateEnd[1]) {
             return true
-          }
-          else {
+          } else {
             return false
           }
-        }
-        else {
+        } else {
           return false
         }
       }
@@ -205,8 +203,8 @@
       // 复位
       'calendar_reset': function() {
         var self = this
-        self.first_value = ""
-        self.sec_value = ""
+        self.first_value = ''
+        self.sec_value = ''
         self.rangeBegin = []
         self.rangeEnd = []
         self.select_day = []
@@ -255,134 +253,27 @@
           self.formated_json_data = new_json_data
         }
 
-        // 连续输出模式
+        // 1.连续输出模式
         if (!self.is_single_month) {
-          // 不是日期范围输出,则输出连续n_months个月
+          // 1.1不是日期范围输出,则输出连续n_months个月
           if (!self.daterange) {
             // kds变量为连续输出的月份数量
             var y = self.year
             var m = self.month
-
             self.select_sum = 0
-
             for (var kds = 0; kds < self.n_months; kds++, m++) {
               // 月份数到达13后的处理方式
               if (m === 12) {
                 m = 0
                 y = y + 1
               }
-
-              var firstDayOfMonth = new Date(y, m, 1).getDay()//当月第一天
-              var lastDateOfMonth = new Date(y, m + 1, 0).getDate()//当月最后一天
-              var lastDayOfLastMonth = new Date(y, m, 0).getDate()//最后一月的最后一天
-
-              var seletSplit = self.first_value.split(" ")[0].split(self.sep)
-
-              var i, line = 0, temp = []
-              for (i = 1; i <= lastDateOfMonth; i++) {
-                var dow = new Date(y, m, i).getDay()
-                // 第一行
-                if (dow === 0) {
-                  temp[line] = []
-                } else if (i === 1) {
-                  temp[line] = []
-
-                  var k = lastDayOfLastMonth - firstDayOfMonth + 1
-                  for (var j = 0; j < firstDayOfMonth; j++) {
-                    // 非本月日期不显示
-                    temp[line].push({ day: k, nodisplay: true })
-                    k++
-                  }
-                }
-
-                var nowTime = Number(new Date(self.year, self.month, self.day))
-                // 获得星期数
-                var thisDay = new Date(y, m, i).getDay()
-                // 当天时间
-                var thisTime = Number(new Date(y, m, i))
-
-                // 日期多选
-                if (self.is_range) {
-                  var options = { day: i }
-
-                  if (self.rangeBegin.length > 0) {
-                    var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
-                    var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
-
-                    if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
-                      options.select = true
-                      self.select_sum++
-                    }
-                    if (beginTime === thisTime) {
-                      options.range_begin = true
-                    } else if (endTime === thisTime) {
-                      options.range_end = true
-                    }
-                  }
-                  // 今天之前的日期禁用
-                  if (self.is_todayDisable) {
-                    if (thisTime < nowTime) {
-                      options.disable = true
-                    }
-                  }
-
-                  // 周末时间
-                  if (thisDay === 0 || thisDay === 6) {
-                    options.weekend = true
-                  }
-
-                  // 结合json数据
-                  if (!!self.formated_json_data) {
-                    if (self.formated_json_data[thisTime]) {
-                      options.disable = true
-                    }
-                  }
-
-                  temp[line].push(options)
-                } else { // 日期单选
-                  var options = { day: i }
-                  var thisTime = Number(new Date(y, m, i))
-                  var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
-
-                  // 今天之前的日期禁用
-                  if (thisTime < nowTime) {
-                    options.disable = true
-                  }
-                  if (thisDay === 0 || thisDay === 6) {
-                    options.weekend = true
-                  }
-
-                  if (thisTime === selectTime) {
-                    options.select = true
-                  }
-
-                  //结合json数据
-                  if (!!self.formated_json_data) {
-                    if (self.formated_json_data[thisTime]) {
-                      options.disable = true
-                    }
-                  }
-                  temp[line].push(options)
-                }
-
-                // 最后一行
-                if (dow === 6) {
-                  line++
-                } else if (i === lastDateOfMonth) {
-                  var k = 1
-                  for (dow; dow < 6; dow++) {
-                    temp[line].push({ day: k, nodisplay: true })
-                    k++
-                  }
-                }
-              }
               var fin_temp = {}
+              fin_temp.arr = self.renderMonth(y, m)
               fin_temp.year = y
               fin_temp.month = m + 1
-              fin_temp.arr = temp
               self.total_days.push(fin_temp)
             }
-          } else { // 范围内日期输出
+          } else { // 1.2范围内日期输出
             // 判断合法日期
             var b = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
             var e = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
@@ -390,9 +281,7 @@
             if (b > e) {
               throw '日期范围不合法!'
               return
-            }
-            // 合法时间
-            else {
+            } else { // 合法时间
               var y = self.dateBegin[0]
               var m = self.dateBegin[1] - 1
               // 开始时间和结束时间都在一个月内
@@ -414,241 +303,28 @@
                   m = 0
                   y = y + 1
                 }
-
-                var firstDayOfMonth = new Date(y, m, 1).getDay()//当月第一天
-                var lastDateOfMonth = new Date(y, m + 1, 0).getDate()//当月最后一天
-                var lastDayOfLastMonth = new Date(y, m, 0).getDate()//最后一月的最后一天
-
-                var seletSplit = self.first_value.split(" ")[0].split(self.sep)
-
-                var i, line = 0, temp = []
-                for (i = 1; i <= lastDateOfMonth; i++) {
-                  var dow = new Date(y, m, i).getDay()
-                  // 第一行
-                  if (dow === 0) {
-                    temp[line] = []
-                  } else if (i === 1) {
-                    temp[line] = []
-
-                    var k = lastDayOfLastMonth - firstDayOfMonth + 1
-                    for (var j = 0; j < firstDayOfMonth; j++) {
-                      // 非本月日期不显示
-                      temp[line].push({ day: k, nodisplay: true })
-                      k++
-                    }
-                  }
-
-                  var nowTime = Number(new Date(self.year, self.month, self.day))
-                  // 获得星期数
-                  var thisDay = new Date(y, m, i).getDay()
-                  // 当天时间
-                  var thisTime = Number(new Date(y, m, i))
-
-                  // 日期多选
-                  if (self.is_range) {
-                    var options = { day: i }
-                    if (self.rangeBegin.length > 0) {
-                      var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
-                      var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
-
-                      if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
-                        options.select = true
-                        self.select_sum++
-                      }
-                      if (beginTime === thisTime) {
-                        options.range_begin = true
-                      } else if (endTime === thisTime) {
-                        options.range_end = true
-                      }
-                    }
-                    // 日期范围输出的情况下禁用边界外的日期
-                    var r_b = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                        1, self.dateBegin[2]))
-                    var r_e = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
-                    if (thisTime < r_b || thisTime > r_e) {
-                      options.disable = true
-                    }
-
-                    // 今天之前的日期禁用
-                    if (self.is_todayDisable) {
-                      if (thisTime < nowTime) {
-                        options.disable = true
-                      }
-                    }
-
-                    // 周末时间
-                    if (thisDay === 0 || thisDay === 6) {
-                      options.weekend = true
-                    }
-
-                    // 结合json数据
-                    if (!!self.formated_json_data) {
-                      if (self.formated_json_data[thisTime]) {
-                        options.disable = true
-                      }
-                    }
-                    temp[line].push(options)
-                  } else { // 日期单选
-                    var options = { day: i }
-                    var thisTime = Number(new Date(y, m, i))
-                    var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
-
-                    // 日期范围输出的情况下禁用边界外的日期
-                    var r_b = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                        1, self.dateBegin[2]))
-                    var r_e = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
-                    if (thisTime < r_b || thisTime > r_e) {
-                      options.disable = true
-                    }
-                    // 今天之前的日期禁用
-                    if (self.is_todayDisable) {
-                      if (thisTime < nowTime) {
-                        options.disable = true
-                      }
-                    }
-                    if (thisDay === 0 || thisDay === 6) {
-                      options.weekend = true
-                    }
-
-                    if (thisTime === selectTime) {
-                      options.select = true
-                    }
-                    // 结合json数据
-                    if (!!self.formated_json_data) {
-                      if (self.formated_json_data[thisTime]) {
-                        options.disable = true
-                      }
-                    }
-                    temp[line].push(options)
-                  }
-
-                  // 最后一行
-                  if (dow === 6) {
-                    line++
-                  } else if (i === lastDateOfMonth) {
-                    var k = 1
-                    for (dow; dow < 6; dow++) {
-                      temp[line].push({ day: k, nodisplay: true })
-                      k++
-                    }
-                  }
-                }
                 var fin_temp = {}
+                fin_temp.arr = self.renderMonth(y, m)
                 fin_temp.year = y
                 fin_temp.month = m + 1
-                fin_temp.arr = temp
                 self.total_days.push(fin_temp)
               }
             }
           }
-        } else { // 单月输出模式
-          // 非区间日期输出
+        } else { // 2.单月输出模式
+          // 2.1非区间日期输出
           if (!self.daterange) {
             var y = self.year
             var m = self.month
             self.total_days = []
             self.select_sum = 0
 
-            var firstDayOfMonth = new Date(y, m, 1).getDay()//当月第一天
-            var lastDateOfMonth = new Date(y, m + 1, 0).getDate()//当月最后一天
-            var lastDayOfLastMonth = new Date(y, m, 0).getDate()//最后一月的最后一天
-
-            var seletSplit = self.first_value.split(" ")[0].split(self.sep)
-
-            var i, line = 0, temp = []
-            for (i = 1; i <= lastDateOfMonth; i++) {
-              var dow = new Date(y, m, i).getDay()
-              // 第一行
-              if (dow === 0) {
-                temp[line] = []
-              } else if (i === 1) {
-                temp[line] = []
-                var k = lastDayOfLastMonth - firstDayOfMonth + 1
-                for (var j = 0; j < firstDayOfMonth; j++) {
-                  // 非本月日期不显示
-                  temp[line].push({ day: k, nodisplay: true })
-                  k++
-                }
-              }
-
-              var nowTime = Number(new Date(self.year, self.month, self.day))
-              // 获得星期数
-              var thisDay = new Date(y, m, i).getDay()
-              // 当天时间
-              var thisTime = Number(new Date(y, m, i))
-              // 日期多选
-              if (self.is_range) {
-                var options = { day: i }
-                if (self.rangeBegin.length > 0) {
-                  var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
-                  var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
-                  if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
-                    options.select = true
-                    self.select_sum++
-                  }
-                  if (beginTime === thisTime) {
-                    options.range_begin = true
-                  } else if (endTime === thisTime) {
-                    options.range_end = true
-                  }
-                }
-                // 今天之前的日期禁用
-                if (self.is_todayDisable) {
-                  if (thisTime < self.today) {
-                    options.disable = true
-                  }
-                }
-                // 周末时间
-                if (thisDay === 0 || thisDay === 6) {
-                  options.weekend = true
-                }
-                // 结合json数据
-                if (!!self.formated_json_data) {
-                  if (self.formated_json_data[thisTime]) {
-                    options.disable = true
-                  }
-                }
-                temp[line].push(options)
-              } else { // 日期单选
-                var options = { day: i }
-                var thisTime = Number(new Date(y, m, i))
-                var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
-                // 今天之前的日期禁用
-                if (thisTime < self.today) {
-                  options.disable = true
-                }
-                if (thisDay === 0 || thisDay === 6) {
-                  options.weekend = true
-                }
-                if (thisTime === selectTime) {
-                  options.select = true
-                }
-                // 结合json数据
-                if (!!self.formated_json_data) {
-                  if (self.formated_json_data[thisTime]) {
-                    options.disable = true
-                  }
-                }
-                temp[line].push(options)
-              }
-
-              // 最后一行
-              if (dow === 6) {
-                line++
-              } else if (i === lastDateOfMonth) {
-                var k = 1
-                for (dow; dow < 6; dow++) {
-                  temp[line].push({ day: k, nodisplay: true })
-                  k++
-                }
-              }
-            }
             var fin_temp = {}
+            fin_temp.arr = self.renderMonth(y, m)
             fin_temp.year = y
             fin_temp.month = m + 1
-            fin_temp.arr = temp
             self.total_days.push(fin_temp)
-          } else { // 区间输出
+          } else { // 2.2区间输出
             // 判断合法日期
             var b = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
             var e = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
@@ -662,118 +338,10 @@
               self.total_days = []
               self.select_sum = 0
 
-              var firstDayOfMonth = new Date(y, m, 1).getDay()// 当月第一天
-              var lastDateOfMonth = new Date(y, m + 1, 0).getDate()// 当月最后一天
-              var lastDayOfLastMonth = new Date(y, m, 0).getDate()// 最后一月的最后一天
-
-              var seletSplit = self.first_value.split(' ')[0].split(self.sep)
-
-              var i, line = 0, temp = []
-              for (i = 1; i <= lastDateOfMonth; i++) {
-                var dow = new Date(y, m, i).getDay()
-                // 第一行
-                if (dow === 0) {
-                  temp[line] = []
-                } else if (i === 1) {
-                  temp[line] = []
-                  var k = lastDayOfLastMonth - firstDayOfMonth + 1
-                  for (var j = 0; j < firstDayOfMonth; j++) {
-                    // 非本月日期不显示
-                    temp[line].push({ day: k, nodisplay: true })
-                    k++
-                  }
-                }
-
-                var nowTime = Number(new Date(self.year, self.month, self.day))
-                // 获得星期数
-                var thisDay = new Date(y, m, i).getDay()
-                // 当天时间
-                var thisTime = Number(new Date(y, m, i))
-                // 日期多选
-                if (self.is_range) {
-                  var options = { day: i }
-                  if (self.rangeBegin.length > 0) {
-                    var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
-                    var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
-                    if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
-                      options.select = true
-                      self.select_sum++
-                    }
-                    if (beginTime === thisTime) {
-                      options.range_begin = true
-                    } else if (endTime === thisTime) {
-                      options.range_end = true
-                    }
-                  }
-                  // 日期范围输出的情况下禁用边界外的日期
-                  var r_b = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                      1, self.dateBegin[2]))
-                  var r_e = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
-                  if (thisTime < r_b || thisTime > r_e) {
-                    options.disable = true
-                  }
-                  // 今天之前的日期禁用
-                  if (self.is_todayDisable) {
-                    if (thisTime < self.today) {
-                      options.disable = true
-                    }
-                  }
-                  // 周末时间
-                  if (thisDay === 0 || thisDay === 6) {
-                    options.weekend = true
-                  }
-                  // 结合json数据
-                  if (!!self.formated_json_data) {
-                    if (self.formated_json_data[thisTime]) {
-                      options.disable = true
-                    }
-                  }
-                  temp[line].push(options)
-                } else { // 日期单选
-                  var options = { day: i }
-                  var thisTime = Number(new Date(y, m, i))
-                  var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
-                  // 日期范围输出的情况下禁用边界外的日期
-                  var r_b = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                      1, self.dateBegin[2]))
-                  var r_e = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
-                  if (thisTime < r_b || thisTime > r_e) {
-                    options.disable = true
-                  }
-                  // 今天之前的日期禁用
-                  if (thisTime < self.today) {
-                    options.disable = true
-                  }
-                  if (thisDay === 0 || thisDay === 6) {
-                    options.weekend = true
-                  }
-                  if (thisTime === selectTime) {
-                    options.select = true
-                  }
-                  // 结合json数据
-                  if (!!self.formated_json_data) {
-                    if (self.formated_json_data[thisTime]) {
-                      options.disable = true
-                    }
-                  }
-                  temp[line].push(options)
-                }
-
-                // 最后一行
-                if (dow === 6) {
-                  line++
-                } else if (i === lastDateOfMonth) {
-                  var k = 1
-                  for (dow; dow < 6; dow++) {
-                    temp[line].push({ day: k, nodisplay: true })
-                    k++
-                  }
-                }
-              }
               var fin_temp = {}
+              fin_temp.arr = self.renderMonth(y, m)
               fin_temp.year = y
               fin_temp.month = m + 1
-              fin_temp.arr = temp
               self.total_days.push(fin_temp)
             }
           }
@@ -873,6 +441,123 @@
         self.cur_month = self.month
         self.render()
         self.$dispatch('change')
+      },
+      renderMonth: function(y, m) {
+        var self = this
+        var firstDayOfMonth = new Date(y, m, 1).getDay() // 当月第一天
+        var lastDateOfMonth = new Date(y, m + 1, 0).getDate() // 当月最后一天
+        var lastDayOfLastMonth = new Date(y, m, 0).getDate() // 最后一月的最后一天
+
+        var seletSplit = self.first_value.split(' ')[0].split(self.sep)
+
+        var i, line = 0, temp = []
+        for (i = 1; i <= lastDateOfMonth; i++) {
+          var dow = new Date(y, m, i).getDay()
+          // 第一行
+          if (dow === 0) {
+            temp[line] = []
+          } else if (i === 1) {
+            temp[line] = []
+            var k_first = lastDayOfLastMonth - firstDayOfMonth + 1
+            for (var j = 0; j < firstDayOfMonth; j++) {
+              // 非本月日期不显示
+              temp[line].push({ day: k_first, nodisplay: true })
+              k_first++
+            }
+          }
+
+          var nowTime = Number(new Date(self.year, self.month, self.day))
+          // 获得星期数
+          var thisDay = new Date(y, m, i).getDay()
+          // 当天时间
+          var thisTime = Number(new Date(y, m, i))
+          // 日期多选
+          if (self.is_range) {
+            var options = { day: i }
+            if (self.rangeBegin.length > 0) {
+              var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
+              var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
+              if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
+                options.select = true
+                self.select_sum++
+              }
+              if (beginTime === thisTime) {
+                options.range_begin = true
+              } else if (endTime === thisTime) {
+                options.range_end = true
+              }
+            }
+            if (self.daterange) {
+              // 日期范围输出的情况下禁用边界外的日期
+              var r_b_m = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
+                  1, self.dateBegin[2]))
+              var r_e_m = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
+              if (thisTime < r_b_m || thisTime > r_e_m) {
+                options.disable = true
+              }
+            }
+            // 今天之前的日期禁用
+            if (self.is_todayDisable) {
+              if (thisTime < self.today) {
+                options.disable = true
+              }
+            }
+            // 周末时间
+            if (thisDay === 0 || thisDay === 6) {
+              options.weekend = true
+            }
+            // 结合json数据
+            if (!!self.formated_json_data) {
+              if (self.formated_json_data[thisTime]) {
+                options.disable = true
+              }
+            }
+            temp[line].push(options)
+          } else { // 日期单选
+            var options = { day: i }
+            var thisTime = Number(new Date(y, m, i))
+            var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
+            if (self.daterange) {
+              // 日期范围输出的情况下禁用边界外的日期
+              var r_b_s = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
+                  1, self.dateBegin[2]))
+              var r_e_s = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
+              if (thisTime < r_b_s || thisTime > r_e_s) {
+                options.disable = true
+              }
+            }
+            // 今天之前的日期禁用
+            if (thisTime < self.today) {
+              options.disable = true
+            }
+            if (thisDay === 0 || thisDay === 6) {
+              options.weekend = true
+            }
+            if (thisTime === selectTime) {
+              options.select = true
+            }
+            // 结合json数据
+            var json = !!self.formated_json_data
+            if (json) {
+              if (self.formated_json_data[thisTime]) {
+                options.disable = true
+              }
+            }
+            temp[line].push(options)
+          }
+
+          // 最后一行
+          if (dow === 6) {
+            line++
+          } else if (i === lastDateOfMonth) {
+            var k_last = 1
+            for (dow; dow < 6; dow++) {
+              temp[line].push({ day: k_last, nodisplay: true })
+              k_last++
+            }
+          }
+        }
+        return temp
       }
     }
   }
