@@ -4,9 +4,9 @@
            @click.stop @touchstart.stop>
 
     <h2 v-if="is_single_month">
-      <a @click.stop="preMonth" v-if="!is_disable_prev"><icon :name="'i-arrow-left'" :color="'#fff'"></icon></a>
+      <a @click.stop="preMonth" v-if="!is_disable_prev">&lt;</a>
       <div class="info">{{ year }} 年 {{ month+1 }} 月</div>
-      <a @click.stop="nextMonth" v-if="!is_disable_next"><icon :name="'i-arrow-right'" :color="'#fff'"></icon></a>
+      <a @click.stop="nextMonth" v-if="!is_disable_next">&gt;</a>
     </h2>
     <!-- 星期头 -->
     <table class="day-title">
@@ -82,13 +82,13 @@
       first_value: {
         type: String,
         twoWay: true,
-        default: ""
+        default: ''
       },
       // 多选时绑定的第二个值
       sec_value: {
         type: String,
         twoWay: true,
-        default: ""
+        default: ''
       },
       // 是否选择日期范围
       is_range: {
@@ -144,7 +144,7 @@
         month: 0, // 当前月份
         day: 0, // 当前日期
         total_days: [], // 总天数
-        select_day: [],// 选择天数(单选用)
+        select_day: [], // 选择天数(单选用)
         days: [], // 当前月份的天数
         rangeBegin: [], // 范围选择起始日期
         rangeEnd: [], // 范围选择结束日期
@@ -216,8 +216,7 @@
         self.first_value = ''
         if (self.is_range) {
           self.rangeBegin = []
-        }
-        else {
+        } else {
           self.select_day = []
         }
         self.render()
@@ -241,7 +240,8 @@
         self.total_days = []
 
         // 统一json_data的数据格式
-        if (!!self.json_data) {
+        var format_json = !!self.json_data
+        if (format_json) {
           var new_json_data = {}
           for (var time in self.json_data) {
             var temp_date = new Date(parseInt(time))
@@ -279,72 +279,59 @@
             var e = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
             // 非法日期
             if (b > e) {
-              throw '日期范围不合法!'
-              return
+              throw new Error('日期范围不合法!')
             } else { // 合法时间
-              var y = self.dateBegin[0]
-              var m = self.dateBegin[1] - 1
+              var r_y = self.dateBegin[0]
+              var r_m = self.dateBegin[1] - 1
+              var step
               // 开始时间和结束时间都在一个月内
               if (self.dateBegin[0] === self.dateEnd[0] && self.dateBegin[1] === self.dateEnd[1]) {
-                var step = 0
+                step = 0
               } else if (self.dateBegin[0] === self.dateEnd[0] && self.dateBegin[1] < self.dateEnd[1]) {
                 // 开始时间和结束时间都在同一年内
-                var step = self.dateEnd[1] - self.dateBegin[1]
+                step = self.dateEnd[1] - self.dateBegin[1]
               } else if (self.dateBegin[0] < self.dateEnd[0]) {
                 // 开始时间和结束时间不在一年内
-                var step = (12 - self.dateBegin[1]) + 12 * (self.dateEnd[0] - self.dateBegin[0] - 1) +
+                step = (12 - self.dateBegin[1]) + 12 * (self.dateEnd[0] - self.dateBegin[0] - 1) +
                     self.dateEnd[1]
               }
 
               self.select_sum = 0
-              for (var kds = 0; kds <= step; kds++, m++) {
+              for (var r_kds = 0; r_kds <= step; r_kds++, r_m++) {
                 // 月份数到达13后的处理方式
-                if (m === 12) {
-                  m = 0
-                  y = y + 1
+                if (r_m === 12) {
+                  r_m = 0
+                  r_y = r_y + 1
                 }
-                var fin_temp = {}
-                fin_temp.arr = self.renderMonth(y, m)
-                fin_temp.year = y
-                fin_temp.month = m + 1
-                self.total_days.push(fin_temp)
+                var fin_temp_t = {}
+                fin_temp_t.arr = self.renderMonth(r_y, r_m)
+                fin_temp_t.year = r_y
+                fin_temp_t.month = r_m + 1
+                self.total_days.push(fin_temp_t)
               }
             }
           }
         } else { // 2.单月输出模式
-          // 2.1非区间日期输出
-          if (!self.daterange) {
-            var y = self.year
-            var m = self.month
-            self.total_days = []
-            self.select_sum = 0
-
-            var fin_temp = {}
-            fin_temp.arr = self.renderMonth(y, m)
-            fin_temp.year = y
-            fin_temp.month = m + 1
-            self.total_days.push(fin_temp)
-          } else { // 2.2区间输出
+          if (self.daterange) {
+            // 区间日期输出
             // 判断合法日期
-            var b = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
-            var e = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
+            var bb = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
+            var ee = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
             // 非法日期
-            if (b > e) {
-              throw '日期范围不合法!'
-              return
-            } else { // 合法时间
-              var y = self.year
-              var m = self.month
-              self.total_days = []
-              self.select_sum = 0
-
-              var fin_temp = {}
-              fin_temp.arr = self.renderMonth(y, m)
-              fin_temp.year = y
-              fin_temp.month = m + 1
-              self.total_days.push(fin_temp)
+            if (bb > ee) {
+              throw new Error('日期范围不合法!')
             }
           }
+          var yy = self.year
+          var mm = self.month
+          self.total_days = []
+          self.select_sum = 0
+
+          var fin_temp_s = {}
+          fin_temp_s.arr = self.renderMonth(yy, mm)
+          fin_temp_s.year = yy
+          fin_temp_s.month = mm + 1
+          self.total_days.push(fin_temp_s)
           // 区间输出end
         }
         // 单月输出end
@@ -393,18 +380,18 @@
           self.total_days = []
           self.render()
         } else { // 单选
-          var select_days = []
+          var select_days_s = []
           // 寻找本月日期数组
-          for (var i = 0; i < self.total_days.length; i++) {
-            if (self.total_days[i].year === year && self.total_days[i].month === mon) {
-              select_days = self.total_days[i].arr
+          for (var k = 0; k < self.total_days.length; k++) {
+            if (self.total_days[k].year === year && self.total_days[k].month === mon) {
+              select_days_s = self.total_days[k].arr
               break
             }
           }
-          var i = select_days[k1][k2].day
+          var d = select_days_s[k1][k2].day
           self.select_day[0] = year
           self.select_day[1] = mon - 1
-          self.select_day[2] = i
+          self.select_day[2] = d
           self.first_value = self.output(self.select_day)
           self.render()
         }
@@ -447,10 +434,9 @@
         var firstDayOfMonth = new Date(y, m, 1).getDay() // 当月第一天
         var lastDateOfMonth = new Date(y, m + 1, 0).getDate() // 当月最后一天
         var lastDayOfLastMonth = new Date(y, m, 0).getDate() // 最后一月的最后一天
-
-        var seletSplit = self.first_value.split(' ')[0].split(self.sep)
-
-        var i, line = 0, temp = []
+        var i
+        var line = 0
+        var temp = []
         for (i = 1; i <= lastDateOfMonth; i++) {
           var dow = new Date(y, m, i).getDay()
           // 第一行
@@ -465,8 +451,6 @@
               k_first++
             }
           }
-
-          var nowTime = Number(new Date(self.year, self.month, self.day))
           // 获得星期数
           var thisDay = new Date(y, m, i).getDay()
           // 当天时间
@@ -507,36 +491,6 @@
               options.weekend = true
             }
             // 结合json数据
-            if (!!self.formated_json_data) {
-              if (self.formated_json_data[thisTime]) {
-                options.disable = true
-              }
-            }
-            temp[line].push(options)
-          } else { // 日期单选
-            var options = { day: i }
-            var thisTime = Number(new Date(y, m, i))
-            var selectTime = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
-            if (self.daterange) {
-              // 日期范围输出的情况下禁用边界外的日期
-              var r_b_s = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                  1, self.dateBegin[2]))
-              var r_e_s = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
-              if (thisTime < r_b_s || thisTime > r_e_s) {
-                options.disable = true
-              }
-            }
-            // 今天之前的日期禁用
-            if (thisTime < self.today) {
-              options.disable = true
-            }
-            if (thisDay === 0 || thisDay === 6) {
-              options.weekend = true
-            }
-            if (thisTime === selectTime) {
-              options.select = true
-            }
-            // 结合json数据
             var json = !!self.formated_json_data
             if (json) {
               if (self.formated_json_data[thisTime]) {
@@ -544,6 +498,37 @@
               }
             }
             temp[line].push(options)
+          } else { // 日期单选
+            var options_s = { day: i }
+            var thisTime_s = Number(new Date(y, m, i))
+            var selectTime_s = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
+            if (self.daterange) {
+              // 日期范围输出的情况下禁用边界外的日期
+              var r_b_s = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
+                  1, self.dateBegin[2]))
+              var r_e_s = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
+              if (thisTime_s < r_b_s || thisTime_s > r_e_s) {
+                options_s.disable = true
+              }
+            }
+            // 今天之前的日期禁用
+            if (thisTime_s < self.today) {
+              options_s.disable = true
+            }
+            if (thisDay === 0 || thisDay === 6) {
+              options_s.weekend = true
+            }
+            if (thisTime_s === selectTime_s) {
+              options_s.select = true
+            }
+            // 结合json数据
+            var json_s = !!self.formated_json_data
+            if (json_s) {
+              if (self.formated_json_data[thisTime_s]) {
+                options_s.disable = true
+              }
+            }
+            temp[line].push(options_s)
           }
 
           // 最后一行
