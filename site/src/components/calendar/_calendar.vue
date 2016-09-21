@@ -5,7 +5,7 @@
 
     <h2 v-if="is_single_month">
       <a @click.stop="preMonth" v-if="!is_disable_prev">&lt;</a>
-      <div class="info">{{ year }} 年 {{ month+1 }} 月</div>
+      <div class="info">{{ cur_year }} 年 {{ cur_month + 1 }} 月</div>
       <a @click.stop="nextMonth" v-if="!is_disable_next">&gt;</a>
     </h2>
     <!-- 星期头 -->
@@ -109,7 +109,7 @@
         default: Array
       },
       // 是否禁用今天之前的日期,默认禁用
-      is_todayDisable: {
+      is_today_disable: {
         type: Boolean,
         default: true
       },
@@ -157,7 +157,7 @@
       is_disable_prev: function() {
         var self = this
         if (self.daterange) {
-          if (self.year === self.dateBegin[0] && self.month + 1 === self.dateBegin[1]) {
+          if (self.cur_year === self.dateBegin[0] && self.cur_month + 1 === self.dateBegin[1]) {
             return true
           } else {
             return false
@@ -169,7 +169,7 @@
       is_disable_next: function() {
         var self = this
         if (self.daterange) {
-          if (self.year === self.dateEnd[0] && self.month + 1 === self.dateEnd[1]) {
+          if (self.cur_year === self.dateEnd[0] && self.cur_month + 1 === self.dateEnd[1]) {
             return true
           } else {
             return false
@@ -190,8 +190,13 @@
         this.rangeEnd = Array
       }
       this.today = Number(new Date(this.year, this.month, this.day))
-      this.cur_year = this.year
-      this.cur_month = this.month
+      if (this.daterange) {
+        this.cur_year = this.dateBegin[0]
+        this.cur_month = this.dateBegin[1] - 1
+      } else {
+        this.cur_year = this.year
+        this.cur_month = this.month
+      }
       this.render()
     },
     events: {
@@ -312,6 +317,8 @@
             }
           }
         } else { // 2.单月输出模式
+//          var yy = self.cur_year
+//          var mm = self.cur_month
           if (self.daterange) {
             // 区间日期输出
             // 判断合法日期
@@ -322,15 +329,13 @@
               throw new Error('日期范围不合法!')
             }
           }
-          var yy = self.year
-          var mm = self.month
           self.total_days = []
           self.select_sum = 0
 
           var fin_temp_s = {}
-          fin_temp_s.arr = self.renderMonth(yy, mm)
-          fin_temp_s.year = yy
-          fin_temp_s.month = mm + 1
+          fin_temp_s.arr = self.renderMonth(self.cur_year, self.cur_month)
+          fin_temp_s.year = self.cur_year
+          fin_temp_s.month = self.cur_month + 1
           self.total_days.push(fin_temp_s)
           // 区间输出end
         }
@@ -404,28 +409,24 @@
       // 上一个月
       preMonth: function() {
         var self = this
-        if (self.month === 0) {
-          self.month = 11
-          self.year = self.year - 1
+        if (self.cur_month === 0) {
+          self.cur_month = 11
+          self.cur_year = self.cur_year - 1
         } else {
-          self.month = self.month - 1
+          self.cur_month = self.cur_month - 1
         }
-        self.cur_year = self.year
-        self.cur_month = self.month
         self.render()
         self.$dispatch('change')
       },
       // 下一月
       nextMonth: function() {
         var self = this
-        if (self.month === 11) {
-          self.month = 0
-          self.year = self.year + 1
+        if (self.cur_month === 11) {
+          self.cur_month = 0
+          self.cur_year = self.cur_year + 1
         } else {
-          self.month = self.month + 1
+          self.cur_month = self.cur_month + 1
         }
-        self.cur_year = self.year
-        self.cur_month = self.month
         self.render()
         self.$dispatch('change')
       },
@@ -461,7 +462,7 @@
             if (self.rangeBegin.length > 0) {
               var beginTime = Number(new Date(self.rangeBegin[0], self.rangeBegin[1], self.rangeBegin[2]))
               var endTime = Number(new Date(self.rangeEnd[0], self.rangeEnd[1], self.rangeEnd[2]))
-              if (beginTime <= thisTime && endTime >= thisTime && !self.json_data[thisTime]) {
+              if (beginTime <= thisTime && endTime >= thisTime && !self.formated_json_data[thisTime]) {
                 options.select = true
                 self.select_sum++
               }
@@ -481,7 +482,7 @@
               }
             }
             // 今天之前的日期禁用
-            if (self.is_todayDisable) {
+            if (self.is_today_disable) {
               if (thisTime < self.today) {
                 options.disable = true
               }
