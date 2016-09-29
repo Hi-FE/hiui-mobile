@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar">
+  <div class="calendar" v-highlight>
     <!-- demo1 -->
     <div class="demo">
       <h3>demo1:连续输出模式</h3>
@@ -17,6 +17,8 @@
                      :is_range="is_range_demo1"></calendar>
         <div class="bottom-btn" @click="is_show_demo1 = false">close</div>
       </div>
+      <!-- code -->
+      <pre><code class="html" v-text="codes.code1"></code></pre>
     </div>
 
     <!-- demo2 -->
@@ -34,6 +36,8 @@
                    :sec_value.sync="sec_value_demo2"
                    :is_range="is_range_demo2"
                    :is_single_month="true"></calendar>
+      <!-- code -->
+      <pre><code class="html" v-text="codes.code2"></code></pre>
     </div>
 
     <!-- demo3 -->
@@ -55,6 +59,8 @@
                    :is_range="is_range_demo3"
                    :is_single_month="true"
                    :is_today_disable="false"></calendar>
+      <!-- code -->
+      <pre><code class="html" v-text="codes.code3"></code></pre>
     </div>
 
     <!-- demo4 -->
@@ -75,6 +81,8 @@
                    :is_single_month="true"
                    :json_data="json_data_demo4"
                    :is_today_disable="false"></calendar>
+      <!-- code -->
+      <pre><code class="html" v-text="codes.code4"></code></pre>
     </div>
   </div>
 </template>
@@ -89,6 +97,7 @@
 
 <script>
   module.exports = {
+    props: [ 'codes' ],
     data: function() {
       return {
         // demo1
