@@ -100,11 +100,11 @@
         type: Boolean,
         default: false
       },
-      dateBegin: {
+      date_begin: {
         type: Array,
         default: Array
       },
-      dateEnd: {
+      date_end: {
         type: Array,
         default: Array
       },
@@ -157,7 +157,7 @@
       is_disable_prev: function() {
         var self = this
         if (self.daterange) {
-          if (self.cur_year === self.dateBegin[0] && self.cur_month + 1 === self.dateBegin[1]) {
+          if (parseInt(self.cur_year) === parseInt(self.date_begin[0]) && parseInt(self.cur_month) + 1 === parseInt(self.date_begin[1])) {
             return true
           } else {
             return false
@@ -169,7 +169,7 @@
       is_disable_next: function() {
         var self = this
         if (self.daterange) {
-          if (self.cur_year === self.dateEnd[0] && self.cur_month + 1 === self.dateEnd[1]) {
+          if (parseInt(self.cur_year) === parseInt(self.date_end[0]) && parseInt(self.cur_month) + 1 === parseInt(self.date_end[1])) {
             return true
           } else {
             return false
@@ -191,8 +191,8 @@
       }
       this.today = Number(new Date(this.year, this.month, this.day))
       if (this.daterange) {
-        this.cur_year = this.dateBegin[0]
-        this.cur_month = this.dateBegin[1] - 1
+        this.cur_year = parseInt(this.date_begin[0])
+        this.cur_month = parseInt(this.date_begin[1]) - 1
       } else {
         this.cur_year = this.year
         this.cur_month = this.month
@@ -280,25 +280,25 @@
             }
           } else { // 1.2范围内日期输出
             // 判断合法日期
-            var b = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
-            var e = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
+            var b = Number(new Date(self.date_begin[0], self.date_begin[1], self.date_begin[2]))
+            var e = Number(new Date(self.date_end[0], self.date_end[1], self.date_end[2]))
             // 非法日期
             if (b > e) {
               throw new Error('日期范围不合法!')
             } else { // 合法时间
-              var r_y = self.dateBegin[0]
-              var r_m = self.dateBegin[1] - 1
+              var r_y = self.date_begin[0]
+              var r_m = self.date_begin[1] - 1
               var step
               // 开始时间和结束时间都在一个月内
-              if (self.dateBegin[0] === self.dateEnd[0] && self.dateBegin[1] === self.dateEnd[1]) {
+              if (self.date_begin[0] === self.date_end[0] && self.date_begin[1] === self.date_end[1]) {
                 step = 0
-              } else if (self.dateBegin[0] === self.dateEnd[0] && self.dateBegin[1] < self.dateEnd[1]) {
+              } else if (self.date_begin[0] === self.date_end[0] && self.date_begin[1] < self.date_end[1]) {
                 // 开始时间和结束时间都在同一年内
-                step = self.dateEnd[1] - self.dateBegin[1]
-              } else if (self.dateBegin[0] < self.dateEnd[0]) {
+                step = self.date_end[1] - self.date_begin[1]
+              } else if (self.date_begin[0] < self.date_end[0]) {
                 // 开始时间和结束时间不在一年内
-                step = (12 - self.dateBegin[1]) + 12 * (self.dateEnd[0] - self.dateBegin[0] - 1) +
-                    self.dateEnd[1]
+                step = (12 - self.date_begin[1]) + 12 * (self.date_end[0] - self.date_begin[0] - 1) +
+                    self.date_end[1]
               }
 
               self.select_sum = 0
@@ -322,8 +322,8 @@
           if (self.daterange) {
             // 区间日期输出
             // 判断合法日期
-            var bb = Number(new Date(self.dateBegin[0], self.dateBegin[1], self.dateBegin[2]))
-            var ee = Number(new Date(self.dateEnd[0], self.dateEnd[1], self.dateEnd[2]))
+            var bb = Number(new Date(self.date_begin[0], self.date_begin[1], self.date_begin[2]))
+            var ee = Number(new Date(self.date_end[0], self.date_end[1], self.date_end[2]))
             // 非法日期
             if (bb > ee) {
               throw new Error('日期范围不合法!')
@@ -345,7 +345,7 @@
       select: function(k1, k2, year, mon, e) {
         if (e !== undefined) e.stopPropagation()
         var self = this
-
+        self.$dispatch('select-data', year, mon)
         // 日期范围选择
         if (self.is_range) {
           var select_days = []
@@ -409,11 +409,11 @@
       // 上一个月
       preMonth: function() {
         var self = this
-        if (self.cur_month === 0) {
+        if (parseInt(self.cur_month) === 0) {
           self.cur_month = 11
-          self.cur_year = self.cur_year - 1
+          self.cur_year = parseInt(self.cur_year) - 1
         } else {
-          self.cur_month = self.cur_month - 1
+          self.cur_month = parseInt(self.cur_month) - 1
         }
         self.render()
         self.$dispatch('change')
@@ -421,11 +421,11 @@
       // 下一月
       nextMonth: function() {
         var self = this
-        if (self.cur_month === 11) {
+        if (parseInt(self.cur_month) === 11) {
           self.cur_month = 0
-          self.cur_year = self.cur_year + 1
+          self.cur_year = parseInt(self.cur_year) + 1
         } else {
-          self.cur_month = self.cur_month + 1
+          self.cur_month = parseInt(self.cur_month) + 1
         }
         self.render()
         self.$dispatch('change')
@@ -474,9 +474,9 @@
             }
             if (self.daterange) {
               // 日期范围输出的情况下禁用边界外的日期
-              var r_b_m = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                  1, self.dateBegin[2]))
-              var r_e_m = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
+              var r_b_m = Number(new Date(self.date_begin[0], self.date_begin[1] -
+                  1, self.date_begin[2]))
+              var r_e_m = Number(new Date(self.date_end[0], self.date_end[1] - 1, self.date_end[2]))
               if (thisTime < r_b_m || thisTime > r_e_m) {
                 options.disable = true
               }
@@ -505,9 +505,9 @@
             var selectTime_s = Number(new Date(self.select_day[0], self.select_day[1], self.select_day[2]))
             if (self.daterange) {
               // 日期范围输出的情况下禁用边界外的日期
-              var r_b_s = Number(new Date(self.dateBegin[0], self.dateBegin[1] -
-                  1, self.dateBegin[2]))
-              var r_e_s = Number(new Date(self.dateEnd[0], self.dateEnd[1] - 1, self.dateEnd[2]))
+              var r_b_s = Number(new Date(self.date_begin[0], self.date_begin[1] -
+                  1, self.date_begin[2]))
+              var r_e_s = Number(new Date(self.date_end[0], self.date_end[1] - 1, self.date_end[2]))
               if (thisTime_s < r_b_s || thisTime_s > r_e_s) {
                 options_s.disable = true
               }

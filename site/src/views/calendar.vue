@@ -27,8 +27,8 @@
           code3:
           '<calendar    :is_show.sync="true"\n' +
           '             :daterange="true"\n' +
-          '             :date-begin="[2016, 7, 7]"\n' +
-          '             :date-end="[2016, 11, 11]"\n' +
+          '             :date_begin="[2016, 7, 7]"\n' +
+          '             :date_end="[2016, 11, 11]"\n' +
           '             :first_value.sync="first_value_demo3"\n' +
           '             :sec_value.sync="sec_value_demo3"\n' +
           '             :is_range="is_range_demo3"\n' +

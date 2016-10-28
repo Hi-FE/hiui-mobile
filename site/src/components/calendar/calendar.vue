@@ -52,8 +52,8 @@
 
       <calendar    :is_show.sync="true"
                    :daterange="true"
-                   :date-begin="[2016, 7, 7]"
-                   :date-end="[2016, 11, 11]"
+                   :date_begin="[2016, 7, 7]"
+                   :date_end="[2016, 11, 11]"
                    :first_value.sync="first_value_demo3"
                    :sec_value.sync="sec_value_demo3"
                    :is_range="is_range_demo3"
